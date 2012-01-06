@@ -1,0 +1,10 @@
+#only System.Console
+/*
+!.gitignore
+!/app
+app/*
+!/app/Plugin
+/app/Plugin/*
+!/app/Plugin/System
+/app/Plugin/System/*
+!/app/Plugin/System/Console
