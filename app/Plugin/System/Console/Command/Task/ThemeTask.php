@@ -2,6 +2,7 @@
 App::uses('AppShell', 'Console/Command');
 
 class ThemeTask extends AppShell {
+    public $uses = array('Variable');
     public $tasks = array('System.Module');
 
     public function main() {
@@ -155,14 +156,57 @@ class ThemeTask extends AppShell {
             unset($yaml['info']['dependencies']);
         }
 
-        $addRegion = true;
         $this->nl();
         $this->hr();
         $this->out(__d('system', 'Adding theme regions'));
         $this->hr();
 
+        $importFrom = strtoupper($this->in(__d('system', 'Do you want to add regions present in the actual theme?'), array('Y', 'N')));
+
+        if ($importFrom == 'Y') {
+            $t = $yaml['info']['admin'] ? 'admin' : 'site';
+            $defaultTheme = $this->Variable->find('first',
+                array(
+                    'conditions' => array(
+                        'name' => "{$t}_theme"
+                    )
+                )
+            );
+            $__yaml = $this->Module->readYaml('Theme'.unserialize($defaultTheme['Variable']['value']), 'theme');
+            $n = array();
+            $i = 0;
+
+            foreach ($__yaml['regions'] as $a => $r) {
+                $n[$i] = array($a, $r);
+                $i++;
+
+                $this->out("{$i}. {$r} ({$a})");
+            }
+
+            if ($i) {
+                $opts = range(1, $i);
+                $import = $this->in(__d('system', 'Type in regions separated by comma `,`.'), $opts);
+                $import = preg_replace('/[^0-9,]*/', '', trim($import));
+                $import = explode(',', $import);
+                $import = Set::filter($import);
+
+                foreach ($import as $i) {
+                    if (isset($n[$i-1])) {
+                        $yaml['regions'][$n[$i-1][0]] = $n[$i-1][1];
+                    }
+                }
+            }
+        }
+
+        if ($importFrom == 'Y') {
+            $addRegion = strtoupper($this->in(__d('system', 'Add more regions?'), array('Y', 'N')));
+            $addRegion = ($addRegion == 'Y');
+        } else {
+            $addRegion = true;
+        }
+
         while ($addRegion) {
-            $region = $this->in(__d('system', 'Region name'));
+            $region = $this->in(__d('system', 'Region name:'));
 
             if (!empty($region)) {
                 $yaml['regions'][strtolower(Inflector::slug($region, '-'))] = $region;

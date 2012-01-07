@@ -55,7 +55,7 @@ class ModuleTask extends AppShell {
         foreach ($modules as $module) {
             $i++;
             $prefix = $numerate ? "{$i}. " : '- ';
-            $_yaml = $this->_readYaml($module['Module']['name']);
+            $_yaml = $this->readYaml($module['Module']['name']);
             $yaml = $type == 'theme' ? $_yaml['info'] : $_yaml;
             $version = isset($yaml['version']) ? " ({$yaml['version']})" : '';
             $siteOrCore = ' [SITE]'; 
@@ -76,7 +76,7 @@ class ModuleTask extends AppShell {
         $modules = $this->listModules(true, $type);
         $opt = $this->in(__d('system', 'Which %s ?', $type), range(1, count($modules)));
         $module = $modules[$opt-1];
-        $_yaml = $this->_readYaml($module['Module']['name']);
+        $_yaml = $this->readYaml($module['Module']['name']);
         $yaml = $type == 'theme' ? $_yaml['info'] : $_yaml;
         $version = isset($yaml['version']) ? " v{$yaml['version']}" : '';
 
@@ -298,7 +298,7 @@ class ModuleTask extends AppShell {
         );
     }
   
-    public function _readYaml($module) {
+    public function readYaml($module) {
         App::uses('Spyc', 'vendors');
         
         if (strpos($module, 'Theme') === 0) {
