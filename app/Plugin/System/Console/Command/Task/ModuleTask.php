@@ -58,8 +58,15 @@ class ModuleTask extends AppShell {
             $_yaml = $this->_readYaml($module['Module']['name']);
             $yaml = $type == 'theme' ? $_yaml['info'] : $_yaml;
             $version = isset($yaml['version']) ? " ({$yaml['version']})" : '';
-            $coreTheme = $type == 'theme' && isCoreTheme($module['Module']['name']) ? ' [CORE]' : ' [SITE]';
-            $this->out("{$prefix}{$yaml['name']}{$version}{$coreTheme}");
+            $siteOrCore = ' [SITE]'; 
+
+            if (($type == 'theme' && isCoreTheme($module['Module']['name'])) ||
+                ($type == 'module' && isCoreModule($module['Module']['name']))
+            ) {
+                $siteOrCore = ' [CORE]';
+            }
+
+            $this->out("{$prefix}{$yaml['name']}{$version}{$siteOrCore}");
         }
 
         return $modules;
@@ -135,6 +142,7 @@ class ModuleTask extends AppShell {
         $Folder = new Folder();
 
         $Folder->delete($path . $info['alias']);
+        $Folder->delete($path . $info['alias'] . '.zip');
 
         if ($this->__rcopy($source, $path . $info['alias'])) {
             $folders = $Folder->tree(realpath($path . $info['alias']), true, 'dir');

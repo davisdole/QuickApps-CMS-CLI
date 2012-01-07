@@ -99,7 +99,7 @@ class ThemeTask extends AppShell {
             $yaml['info']['description'] = $this->in(__d('system', 'Brief description [R]'));
         }
 
-        $yaml['info']['version'] = $this->in(__d('system', 'Module version. e.g.: 1.0, 2.0.1 [O]'));
+        $yaml['info']['version'] = $this->in(__d('system', 'Theme version. e.g.: 1.0, 2.0.1 [O]'));
 
         if (empty($yaml['info']['version'])) {
             unset($yaml['info']['version']);
@@ -168,7 +168,7 @@ class ThemeTask extends AppShell {
                 $yaml['regions'][strtolower(Inflector::slug($region, '-'))] = $region;
             }
 
-            $addRegion = $this->in(__d('system', 'Add other region'), array('Y', 'N'));
+            $addRegion = strtoupper($this->in(__d('system', 'Add other region'), array('Y', 'N')));
             $addRegion = ($addRegion == 'Y');
         }
 
