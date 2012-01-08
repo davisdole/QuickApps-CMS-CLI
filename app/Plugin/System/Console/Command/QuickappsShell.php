@@ -48,7 +48,7 @@ class QuickappsShell extends AppShell {
  * Prepares data in Config/Schema/data/ for the install script.
  * if no table_name is given all tables will be processed.
  *
- * Usage: ./cake System.quickapps data [table_name]
+ * Usage: ./cake system.quickapps export_data [table_name]
  */
     public function export_data() {
         $connection = 'default';
