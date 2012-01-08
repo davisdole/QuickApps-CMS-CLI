@@ -176,11 +176,12 @@ class ModuleTask extends AppShell {
                     $body = '';
 
                     foreach ($info['yaml']['regions'] as $id => $name) {
-                        $body .= "\n\t\t<?php if (!\$this->Layout->emptyRegion('{$id}')): ?>";
+                        $body .= "\n\t\t<?php //if (!\$this->Layout->emptyRegion('{$id}')): ?>";
                         $body .= "\n\t\t\t<div class=\"region {$id}\">";
+                        $body .= "\n\t\t\t\t<h4 class=\"region-name\">" . __d('system', 'Region') .": <span>{$name}</span></h4>";
                         $body .= "\n\t\t\t\t<?php echo \$this->Layout->blocks('{$id}'); ?>";
                         $body .= "\n\t\t\t</div>";
-                        $body .= "\n\t\t<?php endif; ?>\n";
+                        $body .= "\n\t\t<?php //endif; ?>\n";
                     }
 
                     $this->__replace_file_content($file, "/\<\!-- REGIONS --\>/", $body);

@@ -10,12 +10,27 @@
     </head>
 
     <body>
-        <div id="page">
+        <div id="frame">
+            <?php echo $this->Html->link($this->Html->image('logo.png', array('class' => 'site-logo')), '/', array('escape' => false)); ?>        
+
             <?php echo $this->Layout->content(); ?>
 
-            <div id="blocks">
+            <div class="blocks-container">
                 <!-- REGIONS -->
             </div>
+
+            <?php
+                if ($Layout['feed']) {
+                    echo $this->Html->link(
+                        $this->Html->image('rss.png'),
+                        $Layout['feed'],
+                        array(
+                            'class' => 'rss-feed-icon',
+                            'escape' => false
+                        )
+                    );
+                }
+            ?>
         </div>
 
         <?php echo $this->Layout->footer(); ?>
