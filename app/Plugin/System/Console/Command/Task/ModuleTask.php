@@ -2,40 +2,25 @@
 App::uses('AppShell', 'Console/Command');
 
 class ModuleTask extends AppShell {
+    public $tasks = array('System.Gui');
     public $uses = array('Module');
+    public $quit = false;
 
     public function main() {
-        $this->out(__d('system', 'Quickapps CMS - Modules'));
+        $this->out(__t('Quickapps CMS - Modules'));
         $this->hr();
-		$this->out(__d('system', '[C]reate new module'));
-		$this->out(__d('system', '[L]ist installed modules'));
-		$this->out(__d('system', '[I]nfo about module'));
-		$this->out(__d('system', '[E]exit'));
-        $do = strtoupper($this->in(__d('system', 'What would you like to do?')));
-        $exit = false;
+        
+        $this->Gui->menu(
+            $this,
+            array(
+                array('[C]reate new module', 'create'),
+                array('[L]ist installed modules', 'listModules'),
+                array('[I]nfo about module', 'info'),
+                array('[Q]uit', 'quit')
+            )
+        );
 
-        switch ($do) {
-            case 'C':
-                $this->create();
-            break;
-
-            case 'L':
-                $this->listModules();
-            break;
-
-            case 'I':
-                $this->info();
-            break;
-
-            case 'E':
-                $exit = true;
-            break;
-
-            default:
-                $this->out(__d('system', 'You have made an invalid selection.'));
-        }
-
-        if (!$exit) {
+        if (!$this->quit) {
             $this->hr();
             $this->main();
         }
@@ -74,7 +59,7 @@ class ModuleTask extends AppShell {
 
     public function info($type = 'module') {
         $modules = $this->listModules(true, $type);
-        $opt = $this->in(__d('system', 'Which %s ?', $type), range(1, count($modules)));
+        $opt = $this->in(__t('Which %s ?', $type), range(1, count($modules)));
         $module = $modules[$opt-1];
         $_yaml = $this->readYaml($module['Module']['name']);
         $yaml = $type == 'theme' ? $_yaml['info'] : $_yaml;
@@ -83,20 +68,20 @@ class ModuleTask extends AppShell {
         $this->hr();
         $this->out("{$yaml['name']}{$version}");
         $this->hr();
-        $this->out(__d('system', 'Machine Name: %s', $module['Module']['name']));
-        $this->out(__d('system', 'Active: %s',
-            ($module['Module']['status'] ? __d('system', 'Yes') : __d('system', 'No'))
+        $this->out(__t('Machine Name: %s', $module['Module']['name']));
+        $this->out(__t('Active: %s',
+            ($module['Module']['status'] ? __t('Yes') : __t('No'))
         ));
-        $this->out(__d('system', 'Description: %s', $yaml['description']));
+        $this->out(__t('Description: %s', $yaml['description']));
 
         if (isset($yaml['category'])) {
-            $this->out(__d('system', 'Category: %s', $yaml['category']));
+            $this->out(__t('Category: %s', $yaml['category']));
         }
 
-        $this->out(__d('system', 'Core: %s', $yaml['core']));
+        $this->out(__t('Core: %s', $yaml['core']));
 
         if (isset($yaml['dependencies'])) {
-            $this->out(__d('system', 'Dependencies:'));
+            $this->out(__t('Dependencies:'));
 
             foreach ($yaml['dependencies'] as $d) {
                 $this->out("\t- {$d}");
@@ -104,7 +89,7 @@ class ModuleTask extends AppShell {
         }
 
         if (isset($_yaml['regions'])) {
-            $this->out(__d('system', 'Theme regions:'));
+            $this->out(__t('Theme regions:'));
             
             foreach ($_yaml['regions'] as $alias => $name) {
                 $this->out("\t- {$name} ({$alias})");
@@ -116,7 +101,7 @@ class ModuleTask extends AppShell {
         $savePath = ROOT . DS . 'webroot' . DS . 'files' . DS;
 
         if (!is_writable($savePath)) {
-            $this->out(__d('system', 'Write permission ERROR: %s', $savePath));
+            $this->out(__t('Write permission ERROR: %s', $savePath));
 
             return;
         }
@@ -126,7 +111,7 @@ class ModuleTask extends AppShell {
         $this->hr();
 
         if ($created = $this->build($savePath, $module)) {
-            $this->out(__d('system', 'Your module has been compressed and saved in: %s', $savePath . $module['alias'] . '.zip'));
+            $this->out(__t('Your module has been compressed and saved in: %s', $savePath . $module['alias'] . '.zip'));
         }    
     }
     
@@ -178,7 +163,7 @@ class ModuleTask extends AppShell {
                     foreach ($info['yaml']['regions'] as $id => $name) {
                         $body .= "\n\t\t<?php //if (!\$this->Layout->emptyRegion('{$id}')): ?>";
                         $body .= "\n\t\t\t<div class=\"region {$id}\">";
-                        $body .= "\n\t\t\t\t<h4 class=\"region-name\">" . __d('system', 'Region') .": <span>{$name}</span></h4>";
+                        $body .= "\n\t\t\t\t<h4 class=\"region-name\">" . __t('Region') .": <span>{$name}</span></h4>";
                         $body .= "\n\t\t\t\t<?php echo \$this->Layout->blocks('{$id}'); ?>";
                         $body .= "\n\t\t\t</div>";
                         $body .= "\n\t\t<?php //endif; ?>\n";
@@ -218,37 +203,37 @@ class ModuleTask extends AppShell {
         $moduleAlias = null;
 
         while (empty($moduleAlias)) {
-            $moduleAlias = Inflector::camelize($this->in(__d('system', 'Alias name of the module, in CamelCase. e.g.: "MyTestModule" [R]')));
+            $moduleAlias = Inflector::camelize($this->in(__t('Alias name of the module, in CamelCase. e.g.: "MyTestModule" [R]')));
         }
 
         while (empty($yaml['name'])) {
-            $yaml['name'] = $this->in(__d('system', 'Human readable name of the module. e.g.: "My Test Module" [R]'));
+            $yaml['name'] = $this->in(__t('Human readable name of the module. e.g.: "My Test Module" [R]'));
         }
 
         while (empty($yaml['description'])) {
-            $yaml['description'] = $this->in(__d('system', 'Brief description [R]'));
+            $yaml['description'] = $this->in(__t('Brief description [R]'));
         }
 
         while (empty($yaml['category'])) {
-            $yaml['category'] = $this->in(__d('system', 'Category [R]'));
+            $yaml['category'] = $this->in(__t('Category [R]'));
 
             if (Inflector::camelize($yaml['category']) == 'Core') {
                 $yaml['category'] = null;
 
-                $this->out(__d('system', 'Invalid category name.'));
+                $this->out(__t('Invalid category name.'));
             }
         }
 
         while (empty($yaml['version'])) {
-            $yaml['version'] = $this->in(__d('system', 'Module version. e.g.: 1.0, 2.0.1 [R]'));
+            $yaml['version'] = $this->in(__t('Module version. e.g.: 1.0, 2.0.1 [R]'));
         }
 
         while (empty($yaml['core'])) {
-            $yaml['core'] = $this->in(__d('system', 'Required version of Quickapps CMS. e.g: 1.x, >=1.0 [R]'));
+            $yaml['core'] = $this->in(__t('Required version of Quickapps CMS. e.g: 1.x, >=1.0 [R]'));
         }
 
-        $authorName = $this->in(__d('system', 'Author name [O]'));
-        $authorEmail = $this->in(__d('system', 'Author email [O]'));
+        $authorName = $this->in(__t('Author name [O]'));
+        $authorEmail = $this->in(__t('Author email [O]'));
         $yaml['author'] = "{$authorName} <{$authorEmail}>";
 
         if (empty($authorName) && empty($authorEmail)) {
@@ -258,7 +243,7 @@ class ModuleTask extends AppShell {
         $addDependencies = false;
 
         while (!in_array($addDependencies, array('Y', 'N'))) {
-            $addDependencies = strtoupper($this->in(__d('system', 'Does your module depends of other modules ?'), array('Y', 'N')));
+            $addDependencies = strtoupper($this->in(__t('Does your module depends of other modules ?'), array('Y', 'N')));
         }
 
         $yaml['dependencies'] = array();
@@ -270,16 +255,16 @@ class ModuleTask extends AppShell {
             while ($continue) {
                 $dependency = array('name' => null, 'version' => null);
 
-                $this->out(__d('system', '#%s', $i));
+                $this->out(__t('#%s', $i));
 
                 while (empty($dependency['name'])) {
-                    $dependency['name'] = Inflector::camelize($this->in(__d('system', 'Module alias')));
+                    $dependency['name'] = Inflector::camelize($this->in(__t('Module alias')));
                 }
 
-                $dependency['version'] = trim($this->in(__d('system', 'Module version. (Optional)')));
+                $dependency['version'] = trim($this->in(__t('Module version. (Optional)')));
 
                 while (!in_array($continue, array('Y', 'N'), true)) {
-                    $continue = strtoupper($this->in(__d('system', 'Add other module dependency ?'), array('Y', 'N')));
+                    $continue = strtoupper($this->in(__t('Add other module dependency ?'), array('Y', 'N')));
                 }
 
                 $continue = ($continue == 'Y');
@@ -348,5 +333,9 @@ class ModuleTask extends AppShell {
         closedir($dir);
 
         return true;
+    }
+
+    public function quit() {
+        $this->quit = true;
     }
 }

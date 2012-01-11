@@ -4,129 +4,65 @@ App::uses('Model', 'Model');
 
 class QuickappsShell extends AppShell {
     public $tasks = array(
+        'System.Gui',
         'System.Module',
         'System.Theme',
         'System.Utility'
     );
+    public $quit = false;
 
     public function main() {
-        $this->out(__d('system', 'Quickapps CMS - Shell'));
+        $this->out(__t('Quickapps CMS - Shell'));
 		$this->hr();
-		$this->out(__d('system', '[M]odule Shell'));
-		$this->out(__d('system', '[T]hemes Shell'));
-		$this->out(__d('system', '[U]tility Shell'));
-		$this->out(__d('system', '[E]xit'));
-        
-        $exit = false;
-        $task = strtoupper($this->in(__d('system', 'What would you like to do?')));
+        $this->Gui->menu(
+            $this,
+            array(
+                array('Module shell', 'Module->main'),
+                array('Themes shell', 'Theme->main'),
+                array('Utility shell', 'Utility->main'),
+                array('Quit', 'quit')
+            )
+        );
 
-        switch ($task) {
-            case 'M':
-                $this->Module->main();
-            break;
-
-            case 'T':
-                $this->Theme->main();
-            break;
-
-            case 'U':
-                $this->Utility->main();
-            break;
-
-            case 'E':
-                $exit = true;
-            break;
-        }
-
-        if (!$exit) {
+        if (!$this->quit) {
             $this->hr();
             $this->main();
         }
     }
 
 /**
- * Prepares data in Config/Schema/data/ for the install script.
- * if no table_name is given all tables will be processed.
+ * Allows to perform a database backup.
  *
- * Usage: ./cake system.quickapps export_data [table_name]
- */
-    public function export_data() {
-        $connection = 'default';
-        $tables = array();
-
-        if (!isset($this->args[0])) {
-            $tables = $this->getAllTables($connection);
-        } else {
-            $tables[] = trim($this->args[0]);
-        }
-
-        foreach ($tables as $table) {
-            $records = array();
-            $modelAlias = Inflector::classify($table);
-            $model = new Model(array('name' => $modelAlias, 'table' => $table, 'ds' => $connection));
-            $records = $model->find('all', array('recursive' => -1));
-            $recordString = '';
-
-            foreach ($records as $record) {
-                $values = array();
-
-                foreach ($record[$modelAlias] as $field => $value) {
-                    $value = str_replace("'", "\'", $value);
-                    $values[] = "\t\t\t'{$field}' => '{$value}'";
-                }
-
-                $recordString .= "\t\tarray(\n";
-                $recordString .= implode(",\n", $values);
-                $recordString .= "\n\t\t),\n";
-            }
-
-            $content = "<?php\n";
-                $content .= "class " . $modelAlias . " {\n";
-                    $content .= "\tpublic \$table = '" . $table . "';\n";
-                    $content .= "\tpublic \$records = array(\n";
-                        $content .= $modelAlias != 'User' ? $recordString : '';
-                    $content .= "\t);\n\n";
-                $content .= "}\n";
-
-            App::uses('File', 'Utility');
-
-            $filePath = APP . 'Config' . DS . 'Schema' . DS . 'data' . DS . $modelAlias . '.php';
-            $file = new File($filePath, true);
-
-            $file->write($content);
-            $this->out('File created: ' . $filePath);
-        }   
-    }   
-
-/**
- * Get an Array of all the tables in the supplied connection
- * will halt the script if no tables are found.
+ * ###Usage
+ * e.g.:    ./cake system.quickapps db_backup -t users,blocks -d ./my_backups/ -s -m
  *
- * @param string $useDbConfig Connection name to scan.
- * @return array Array of tables in the database.
+ * This will backup the tables `users` and `blocks`, and DB schema.
+ * All will be stored on `/my_backups/{DATE @ HOUR @ TIMESTAMP}`.
  */
-	public function getAllTables($useDbConfig = null) {
-		if (!isset($useDbConfig)) {
-			$useDbConfig = $this->connection;
-		}
+    public function db_backup() {
+        $table = isset($this->args[0]) ? $this->args[0] : null;
+        $this->Utility->export_data($this->params);
+    }
 
-		$tables = array();
-		$db = ConnectionManager::getDataSource($useDbConfig);
-		$db->cacheSources = false;
-		$usePrefix = empty($db->config['prefix']) ? '' : $db->config['prefix'];
-		if ($usePrefix) {
-			foreach ($db->listSources() as $table) {
-				if (!strncmp($table, $usePrefix, strlen($usePrefix))) {
-					$tables[] = substr($table, strlen($usePrefix));
-				}
-			}
-		} else {
-			$tables = $db->listSources();
-		}
-		if (empty($tables)) {
-			$this->err(__d('cake_console', 'Your database does not have any tables.'));
-			$this->_stop();
-		}
-		return $tables;
-	}
+    public function getOptionParser() {
+        $parser = parent::getOptionParser();
+
+        $parser->addSubcommand('db_backup', array(
+            'help' => __t('Backup all the data of your database.'),
+            'parser' => array(
+                'options' => array(
+                    'table' => array('short' => 't', 'help' => __t('Comma separated list of tables to backup. Leave empty to perform a full backup.'), 'required' => false, 'default' => '*'),
+                    'destination' => array('short' => 'd', 'help' => __t('Destination folder where to save your backup. by default: %s', ROOT . DS . 'tmp' . DS . 'cache'  . DS . 'db_backups'), 'required' => false),
+                    'schema' => array('short' => 's', 'help' => __t('Backup db schema.'), 'required' => false, 'boolean' => true),
+                    'timemark' => array('short' => 'm', 'help' => __t('Stores backup files on a timestamp folder inside "destination".'), 'required' => false, 'boolean' => true)
+                )
+            )
+        ));
+
+        return $parser;
+    }
+
+    public function quit() {
+        $this->quit = true;
+    }
 }
