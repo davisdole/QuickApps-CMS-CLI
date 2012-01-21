@@ -3,7 +3,7 @@ App::uses('AppShell', 'Console/Command');
 
 class ThemeTask extends AppShell {
     public $uses = array('Variable');
-    public $tasks = array('System.Module');
+    public $tasks = array('System.Module', 'System.Gui');
     public $quit = false;
 
     public function main() {
