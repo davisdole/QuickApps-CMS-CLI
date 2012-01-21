@@ -107,7 +107,7 @@ class UtilityTask extends AppShell {
 
         foreach ($tables as $table) {
             $records = array();
-            $modelAlias = Inflector::classify($table);
+            $modelAlias = Inflector::camelize($table);
             $model = new Model(array('name' => $modelAlias, 'table' => $table, 'ds' => $connection));
             $records = $model->find('all', array('recursive' => -1));
             $recordString = '';
