@@ -3,6 +3,7 @@
 !.gitignore
 !/app
 app/*
+!/app/Console
 !/app/Plugin
 /app/Plugin/*
 !/app/Cake
