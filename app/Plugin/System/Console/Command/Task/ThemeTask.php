@@ -199,6 +199,21 @@ class ThemeTask extends AppShell {
             $addRegion = ($addRegion == 'Y');
         }
 
+        if ($yaml['info']['admin']) {
+            $regions = array();
+
+            if (!in_array('toolbar', array_keys($yaml['info']['regions']))) {
+                $regions['toolbar'] = 'Toolbar';
+            }
+
+            if (!in_array('help', array_keys($yaml['info']['regions']))) {
+                $regions['help'] = 'Help';
+            }
+
+            $regions = array_merge($regions, $yaml['regions']);
+            $yaml['regions'] = $regions;
+        }
+
         return array(
             'alias' => $themeAlias,
             'yaml' => $yaml
