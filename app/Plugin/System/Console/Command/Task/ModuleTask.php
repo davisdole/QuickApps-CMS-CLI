@@ -288,7 +288,7 @@ class ModuleTask extends AppShell {
         App::uses('Spyc', 'vendors');
         
         if (strpos($module, 'Theme') === 0) {
-            $module = str_replace_once('Theme', '', $module);
+            $module = preg_replace('/^Theme/', '', $module);
             $path = App::themePath($module) . $module . '.yaml';
         } else {
             $path = CakePlugin::path($module) . $module . '.yaml';
