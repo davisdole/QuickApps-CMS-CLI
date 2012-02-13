@@ -24,7 +24,7 @@ class GuiTask extends AppShell {
 
         if (!empty($mappedOpts)) {
             foreach ($mappedOpts as $symbol => $n) {
-               $allowed[$n] = $symbol; 
+               $allowed[$n] = $symbol;
             }
         }
 

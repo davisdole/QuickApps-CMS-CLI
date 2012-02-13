@@ -40,7 +40,7 @@ class UtilityTask extends AppShell {
                 $this->out($path . $file);
                 @unlink($path . $file);
             }
-        }    
+        }
     }
 
     public function password_hash() {
@@ -140,7 +140,7 @@ class UtilityTask extends AppShell {
 
             $file->write($content);
             $this->out('File created: ' . $filePath);
-        }   
+        }
     }
 
     public function quit() {

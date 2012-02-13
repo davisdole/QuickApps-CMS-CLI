@@ -9,7 +9,7 @@ class ModuleTask extends AppShell {
     public function main() {
         $this->out(__t('Quickapps CMS - Modules'));
         $this->hr();
-        
+
         $this->Gui->menu(
             $this,
             array(
@@ -43,7 +43,7 @@ class ModuleTask extends AppShell {
             $_yaml = $this->readYaml($module['Module']['name']);
             $yaml = $type == 'theme' ? $_yaml['info'] : $_yaml;
             $version = isset($yaml['version']) ? " ({$yaml['version']})" : '';
-            $siteOrCore = ' [SITE]'; 
+            $siteOrCore = ' [SITE]';
 
             if (($type == 'theme' && isCoreTheme($module['Module']['name'])) ||
                 ($type == 'module' && isCoreModule($module['Module']['name']))
@@ -90,7 +90,7 @@ class ModuleTask extends AppShell {
 
         if (isset($_yaml['regions'])) {
             $this->out(__t('Theme regions:'));
-            
+
             foreach ($_yaml['regions'] as $alias => $name) {
                 $this->out("\t- {$name} ({$alias})");
             }
@@ -112,9 +112,9 @@ class ModuleTask extends AppShell {
 
         if ($created = $this->build($savePath, $module)) {
             $this->out(__t('Your module has been compressed and saved in: %s', $savePath . $module['alias'] . '.zip'));
-        }    
+        }
     }
-    
+
     public function build($path, $info, $type = 'module') {
         $path = str_replace(DS . DS, DS, $path . DS);
 
@@ -137,7 +137,7 @@ class ModuleTask extends AppShell {
 
                 if (strpos($folderName, $TypeName) !== false) {
                     rename($folder, dirname($folder) . DS . str_replace($TypeName, $info['alias'], $folderName));
-                }            
+                }
             }
 
             $files = $Folder->tree(realpath($path . $info['alias']), true, 'file');
@@ -283,10 +283,10 @@ class ModuleTask extends AppShell {
             'yaml' => $yaml
         );
     }
-  
+
     public function readYaml($module) {
         App::uses('Spyc', 'vendors');
-        
+
         if (strpos($module, 'Theme') === 0) {
             $module = preg_replace('/^Theme/', '', $module);
             $path = App::themePath($module) . $module . '.yaml';
@@ -296,8 +296,8 @@ class ModuleTask extends AppShell {
 
         return Spyc::YAMLLoad($path);
     }
-    
-    private function __file_ext($fileName){
+
+    private function __file_ext($fileName) {
         return strtolower(str_replace('.', '', strtolower(strrchr($fileName, '.'))));
     }
 

@@ -9,31 +9,10 @@
         <?php echo $this->Layout->header(); ?>
     </head>
 
-    <body>
+    <body id="login">
         <div id="frame">
-            <?php echo $this->Html->link($this->Html->image('logo.png', array('class' => 'site-logo')), '/', array('escape' => false)); ?>
-
             <?php echo $this->Layout->content(); ?>
-
-            <div class="blocks-container">
-                <!-- REGIONS -->
-            </div>
-
-            <?php
-                if ($Layout['feed']) {
-                    echo $this->Html->link(
-                        $this->Html->image('rss.png'),
-                        $Layout['feed'],
-                        array(
-                            'class' => 'rss-feed-icon',
-                            'escape' => false
-                        )
-                    );
-                }
-            ?>
         </div>
-
-        <?php echo $this->Layout->footer(); ?>
     </body>
 </html>
 

@@ -48,7 +48,7 @@ class ThemeTask extends AppShell {
 
         if ($created = $this->Module->build($savePath, $theme, 'theme')) {
             $this->out(__t('Your theme has been compressed and saved in: %s', $savePath . $theme['alias'] . '.zip'));
-        }    
+        }
     }
 
     protected function _read() {
@@ -65,7 +65,8 @@ class ThemeTask extends AppShell {
                 'all' => array('reset.css', 'styles.css')
             ),
             'regions' => array(),
-            'layout' => 'default'
+            'layout' => 'default',
+            'login_layout' => 'login'
         );
         $themeAlias = null;
         $yaml['info']['admin'] = strtoupper($this->in(__t('Is your theme an admin theme ?'), array('Y', 'N')));
@@ -212,6 +213,8 @@ class ThemeTask extends AppShell {
 
             $regions = array_merge($regions, $yaml['regions']);
             $yaml['regions'] = $regions;
+        } else {
+            unset($yaml['login_layout']);
         }
 
         return array(

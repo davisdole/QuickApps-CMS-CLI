@@ -12,3 +12,4 @@ regions:
     region-name: Region Name
 
 layout: default
+login_layout: login

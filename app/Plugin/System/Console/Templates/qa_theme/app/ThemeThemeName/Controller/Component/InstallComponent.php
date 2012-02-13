@@ -1,7 +1,7 @@
 <?php
 /**
  * Install class for an individual Module.
- * 
+ *
  */
 class InstallComponent extends Component {
 /**
@@ -14,7 +14,7 @@ class InstallComponent extends Component {
     public $Installer;
 
 /**
- * Called before the module installation process. A boolean FALSE return will 
+ * Called before the module installation process. A boolean FALSE return will
  * stop the installation.
  *
  * @return boolean FALSE to stop the installation.
@@ -27,12 +27,12 @@ class InstallComponent extends Component {
  * Called after the module has been installed.
  *
  * @return void
- */    
+ */
     function afterInstall() {
     }
 
 /**
- * Called before the module uninstall process. A boolean FALSE return will 
+ * Called before the module uninstall process. A boolean FALSE return will
  * stop the uninstallation.
  *
  * @return boolean FALSE to stop the installation.
