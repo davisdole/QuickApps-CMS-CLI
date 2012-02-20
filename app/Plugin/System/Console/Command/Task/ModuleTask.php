@@ -45,8 +45,8 @@ class ModuleTask extends AppShell {
             $version = isset($yaml['version']) ? " ({$yaml['version']})" : '';
             $siteOrCore = ' [SITE]';
 
-            if (($type == 'theme' && isCoreTheme($module['Module']['name'])) ||
-                ($type == 'module' && isCoreModule($module['Module']['name']))
+            if (($type == 'theme' && QuickApps::is('theme.core', $module['Module']['name'])) ||
+                ($type == 'module' && QuickApps::is('module.core', $module['Module']['name']))
             ) {
                 $siteOrCore = ' [CORE]';
             }
