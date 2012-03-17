@@ -1,14 +1,14 @@
 #only System.Console
 /*
 !.gitignore
-!/app
-app/*
-!/app/Console
-!/app/Plugin
-/app/Plugin/*
-!/app/Cake
-/app/Cake/*
-!/app/Cake/Console
-!/app/Plugin/System
-/app/Plugin/System/*
-!/app/Plugin/System/Console
+!/QuickApps
+QuickApps/*
+!/QuickApps/Console
+!/QuickApps/Plugin
+/QuickApps/Plugin/*
+!/QuickApps/Cake
+/QuickApps/Cake/*
+!/QuickApps/Cake/Console
+!/QuickApps/Plugin/System
+/QuickApps/Plugin/System/*
+!/QuickApps/Plugin/System/Console
