@@ -12,10 +12,10 @@ class ThemeTask extends AppShell {
         $this->Gui->menu(
             $this,
             array(
-                array('[C]reate new theme', 'create'),
-                array('[L]ist installed themes', 'listModules'),
-                array('[I]nfo about theme', 'info'),
-                array('[Q]uit', 'quit')
+                array('Create new theme', 'create'),
+                array('List installed themes', 'listModules'),
+                array('Info about theme', 'info'),
+                array('Quit', 'quit')
             )
         );
 

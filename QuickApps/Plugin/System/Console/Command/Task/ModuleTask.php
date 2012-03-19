@@ -13,10 +13,10 @@ class ModuleTask extends AppShell {
         $this->Gui->menu(
             $this,
             array(
-                array('[C]reate new module', 'create'),
-                array('[L]ist installed modules', 'listModules'),
-                array('[I]nfo about module', 'info'),
-                array('[Q]uit', 'quit')
+                array('Create new module', 'create'),
+                array('List installed modules', 'listModules'),
+                array('Info about module', 'info'),
+                array('Quit', 'quit')
             )
         );
 
