@@ -1,6 +1,11 @@
-body { background:#303030; color:#999; font-family:Arial; font-size:.8em; padding-top:50px; }
+body {
+    background:/*[color title='Background']*/#303030/*[/color]*/;
+    color:/*[color title='Text']*/#999999/*[/color]*/;
+    font:/*[font title='Font style']*/10px Arial/*[/font]*/;
+    padding-top:50px;
+}
 #frame {
-    background:#222;
+    background:/*[color title='Content background']*/#222222/*[/color]*/;
     width:950px;
     margin:0 auto;
     overflow:hidden;
@@ -52,3 +57,5 @@ div.node, .blocks-container .region, div.node .meta {
     border-radius: 10px;
 }
 div.paginator .disabled { display:none; }
+
+/*[miscellaneous]*//**[/miscellaneous]/
