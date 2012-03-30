@@ -177,6 +177,8 @@ class ModuleTask extends AppShell {
                 }
             }
 
+            $this->build_field(realpath($path . $info['alias']));
+
             App::uses('PclZip', 'vendors');
 
             $zip = new PclZip($path . $info['alias'] . '.zip');
@@ -188,6 +190,72 @@ class ModuleTask extends AppShell {
         }
 
         return false;
+    }
+
+    public function build_field($path) {
+        $build = true;
+        $path = str_replace(DS . DS, DS, $path . DS);
+        $source = dirname(dirname(dirname(__FILE__))) . DS . 'Templates' . DS . "qa_field";
+        $module_name = Inflector::camelize(basename($path));
+
+        while ($build) {
+            $field = array(
+                'name' => false,
+                'description' => false,
+                'max_instances' => null
+            );
+            $build = strtolower($this->in(__t('Does your module has any Field ? (Y/N)'))) == 'y';
+
+            if ($build) {
+                while (!$field['name']) {
+                    $field['name'] = $module_name . Inflector::camelize($this->in(__t('Enter your field name in CamelCase. e.g.: "FieldName" [R]')));
+                }
+
+                while (!$field['description']) {
+                    $field['description'] = $this->in(__t('Enter a brief description [R]'));
+                }
+
+                while ($field['max_instances'] === null) {
+                    $field['max_instances'] = $this->in(__t("How many instances of this field can be attached to entities ?\nLeave empty for no limits, or zero (0) to indicate that field can not be attached to entities. [O]"));
+
+                    if (empty($field['max_instances'])) {
+                        $field['max_instances'] = false;
+                    } else {
+                        $field['max_instances'] = intval($field['max_instances']);
+                    }
+                }
+
+                $Folder = new Folder($path . 'Fields' . DS . $field['name'], true);
+
+                if ($this->__rcopy($source, $path . 'Fields' . DS . $field['name'])) {
+                    App::uses('Spyc', 'vendors');
+
+                    $yamlContent = Spyc::YAMLDump($field);
+
+                    file_put_contents($path . 'Fields' . DS . $field['name'] . DS . 'FieldName.yaml', $yamlContent);
+
+                    $files = $Folder->findRecursive();
+
+                    foreach ($files as $file) {
+                        $file_name = basename($file);
+                        $file_path = dirname($file) . DS;
+                        $content = file_get_contents($file);
+                        $content = str_replace('field_name', Inflector::underscore($field['name']), $content);
+                        $content = str_replace('FieldName', $field['name'], $content);
+
+                        file_put_contents($file, $content);
+
+                        if (strpos($file_name, 'FieldName') !== false) {
+                            rename($file, $file_path . str_replace('FieldName', $field['name'], $file_name));
+                        }
+
+                        if (strpos($file_name, 'field_name') !== false) {
+                            rename($file, $file_path . str_replace('field_name', Inflector::underscore($field['name']), $file_name));
+                        }
+                    }
+                }
+            }
+        }
     }
 
     protected function _read() {

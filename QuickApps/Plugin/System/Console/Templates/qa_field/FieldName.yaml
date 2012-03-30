@@ -1,8 +1,4 @@
 ---
-name: Module Name
-description: Module description
-category: Core
-version: 1.0
-core: 1.x
-dependencies:
-    - OtherModule (1.x)
+name: Field Name
+description: Field description.
+max_instances: false
