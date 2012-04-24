@@ -59,8 +59,7 @@ class ThemeTask extends AppShell {
                 'description' => null,
                 'version' => null,
                 'core' => null,
-                'author' => null,
-                'regions' => array()
+                'author' => null
             ),
             'stylesheets' => array(
                 'all' => array('reset.css', 'styles.css')
