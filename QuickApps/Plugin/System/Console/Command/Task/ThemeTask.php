@@ -172,7 +172,7 @@ class ThemeTask extends AppShell {
                 $import = $this->in(__t('Type in regions separated by comma `,`.'), $opts);
                 $import = preg_replace('/[^0-9,]*/', '', trim($import));
                 $import = explode(',', $import);
-                $import = Set::filter($import);
+                $import = Hash::filter($import);
 
                 foreach ($import as $i) {
                     if (isset($n[$i-1])) {

@@ -5,12 +5,12 @@
  * PHP 5
  *
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
  * @since         CakePHP(tm) v 1.2.0.5012
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -19,6 +19,7 @@
 App::uses('AppShell', 'Console/Command');
 App::uses('File', 'Utility');
 App::uses('Folder', 'Utility');
+App::uses('Hash', 'Utility');
 
 /**
  * Language string extractor
@@ -118,7 +119,7 @@ class ExtractTask extends AppShell {
 		}
 		if (isset($this->params['paths'])) {
 			$this->_paths = explode(',', $this->params['paths']);
-		} else if (isset($this->params['plugin'])) {
+		} elseif (isset($this->params['plugin'])) {
 			$plugin = Inflector::camelize($this->params['plugin']);
 			if (!CakePlugin::loaded($plugin)) {
 				CakePlugin::load($plugin);
@@ -159,7 +160,7 @@ class ExtractTask extends AppShell {
 
 		if (isset($this->params['output'])) {
 			$this->_output = $this->params['output'];
-		} else if (isset($this->params['plugin'])) {
+		} elseif (isset($this->params['plugin'])) {
 			$this->_output = $this->_paths[0] . DS . 'Locale';
 		} else {
 			$message = __d('cake_console', "What is the path you would like to output?\n[Q]uit", $this->_paths[0] . DS . 'Locale');
@@ -239,7 +240,7 @@ class ExtractTask extends AppShell {
 		$this->out(__d('cake_console', 'Output Directory: ') . $this->_output);
 		$this->hr();
 		$this->_extractTokens();
-        $this->_extractValidationMessages();
+		$this->_extractValidationMessages();
 
         if (empty($this->params['exclude-plugins']) || !$this->_isExtractingApp()) {
             $plugins = App::objects('plugins', null, false);
@@ -320,7 +321,7 @@ class ExtractTask extends AppShell {
 			}
 			unset($allTokens);
 			$this->_parse('__', array('singular'));
-			$this->_parse('__t', array('singular'));
+            $this->_parse('__t', array('singular'));
 			$this->_parse('__n', array('singular', 'plural'));
 			$this->_parse('__d', array('domain', 'singular'));
 			$this->_parse('__c', array('singular'));
@@ -442,7 +443,7 @@ class ExtractTask extends AppShell {
 			return;
 		}
 
-		$dims = Set::countDim($rules);
+		$dims = Hash::dimensions($rules);
 		if ($dims == 1 || ($dims == 2 && isset($rules['message']))) {
 			$rules = array($rules);
 		}
@@ -474,6 +475,8 @@ class ExtractTask extends AppShell {
  * @return void
  */
 	protected function _buildFiles() {
+		$paths = $this->_paths;
+		$paths[] = realpath(APP) . DS;
 		foreach ($this->_translations as $domain => $translations) {
 			foreach ($translations as $msgid => $details) {
 				$plural = $details['msgid_plural'];
@@ -484,7 +487,7 @@ class ExtractTask extends AppShell {
 					$occurrences[] = $file . ':' . implode(';', $lines);
 				}
 				$occurrences = implode("\n#: ", $occurrences);
-				$header = '#: ' . str_replace($this->_paths, '', $occurrences) . "\n";
+				$header = '#: ' . str_replace($paths, '', $occurrences) . "\n";
 
 				if ($plural === false) {
 					$sentence = "msgid \"{$msgid}\"\n";
@@ -595,8 +598,10 @@ class ExtractTask extends AppShell {
  */
 	protected function _getStrings(&$position, $target) {
 		$strings = array();
-		while (count($strings) < $target && ($this->_tokens[$position] == ',' || $this->_tokens[$position][0] == T_CONSTANT_ENCAPSED_STRING)) {
-			if ($this->_tokens[$position][0] == T_CONSTANT_ENCAPSED_STRING && $this->_tokens[$position+1] == '.') {
+		$count = count($strings);
+		while ($count < $target && ($this->_tokens[$position] == ',' || $this->_tokens[$position][0] == T_CONSTANT_ENCAPSED_STRING)) {
+			$count = count($strings);
+			if ($this->_tokens[$position][0] == T_CONSTANT_ENCAPSED_STRING && $this->_tokens[$position + 1] == '.') {
 				$string = '';
 				while ($this->_tokens[$position][0] == T_CONSTANT_ENCAPSED_STRING || $this->_tokens[$position] == '.') {
 					if ($this->_tokens[$position][0] == T_CONSTANT_ENCAPSED_STRING) {
@@ -605,7 +610,7 @@ class ExtractTask extends AppShell {
 					$position++;
 				}
 				$strings[] = $string;
-			} else if ($this->_tokens[$position][0] == T_CONSTANT_ENCAPSED_STRING) {
+			} elseif ($this->_tokens[$position][0] == T_CONSTANT_ENCAPSED_STRING) {
 				$strings[] = $this->_formatString($this->_tokens[$position][1]);
 			}
 			$position++;
@@ -679,7 +684,7 @@ class ExtractTask extends AppShell {
 				}
 				$exclude[] = preg_quote($e, '/');
 			}
-			$pattern =  '/' . implode('|', $exclude) . '/';
+			$pattern = '/' . implode('|', $exclude) . '/';
 		}
 		foreach ($this->_paths as $path) {
 			$Folder = new Folder($path);
@@ -705,4 +710,5 @@ class ExtractTask extends AppShell {
 	protected function _isExtractingApp() {
 		return $this->_paths === array(APP);
 	}
+
 }

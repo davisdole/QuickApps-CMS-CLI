@@ -1,0 +1,36 @@
+2012-05-04 17:27:33 Warning: Warning (512): C:\wamp\www\quickapps\QuickApps\Cake\Console\Templates\skel\tmp\cache\i18n\ is not writable in [C:\wamp\www\quickapps\QuickApps\Cake\Cache\Engine\FileEngine.php, line 336]
+Trace:
+FileEngine::_active() - APP\Cake\Cache\Engine\FileEngine.php, line 336
+FileEngine::init() - APP\Cake\Cache\Engine\FileEngine.php, line 91
+Cache::_buildEngine() - APP\Cake\Cache\Cache.php, line 164
+Cache::config() - APP\Cake\Cache\Cache.php, line 135
+include - APP\Plugin\Locale\Config\bootstrap.php, line 8
+CakePlugin::bootstrap() - APP\Cake\Core\CakePlugin.php, line 165
+CakePlugin::load() - APP\Cake\Core\CakePlugin.php, line 100
+include - APP\Config\bootstrap.php, line 95
+Configure::bootstrap() - APP\Cake\Core\Configure.php, line 92
+require - APP\Cake\bootstrap.php, line 142
+ShellDispatcher::_bootstrap() - APP\Cake\Console\ShellDispatcher.php, line 131
+ShellDispatcher::_initEnvironment() - APP\Cake\Console\ShellDispatcher.php, line 101
+ShellDispatcher::__construct() - APP\Cake\Console\ShellDispatcher.php, line 57
+ShellDispatcher::run() - APP\Cake\Console\ShellDispatcher.php, line 68
+[main] - APP\Cake\Console\cake.php, line 41
+
+2012-05-04 17:31:28 Warning: Warning (512): C:\wamp\www\quickapps\QuickApps\Cake\Console\Templates\skel\tmp\cache\i18n\ is not writable in [C:\wamp\www\quickapps\QuickApps\Cake\Cache\Engine\FileEngine.php, line 336]
+Trace:
+FileEngine::_active() - APP\Cake\Cache\Engine\FileEngine.php, line 336
+FileEngine::init() - APP\Cake\Cache\Engine\FileEngine.php, line 91
+Cache::_buildEngine() - APP\Cake\Cache\Cache.php, line 164
+Cache::config() - APP\Cake\Cache\Cache.php, line 135
+include - APP\Plugin\Locale\Config\bootstrap.php, line 8
+CakePlugin::bootstrap() - APP\Cake\Core\CakePlugin.php, line 165
+CakePlugin::load() - APP\Cake\Core\CakePlugin.php, line 100
+include - APP\Config\bootstrap.php, line 143
+Configure::bootstrap() - APP\Cake\Core\Configure.php, line 92
+require - APP\Cake\bootstrap.php, line 142
+ShellDispatcher::_bootstrap() - APP\Cake\Console\ShellDispatcher.php, line 131
+ShellDispatcher::_initEnvironment() - APP\Cake\Console\ShellDispatcher.php, line 101
+ShellDispatcher::__construct() - APP\Cake\Console\ShellDispatcher.php, line 57
+ShellDispatcher::run() - APP\Cake\Console\ShellDispatcher.php, line 68
+[main] - APP\Cake\Console\cake.php, line 41
+

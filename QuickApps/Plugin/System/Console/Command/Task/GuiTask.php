@@ -40,7 +40,7 @@ class GuiTask extends AppShell {
             }
 
             if (strpos($action[1], '->') !== false) {
-                $explode = Set::filter(explode('->', $action[1]));
+                $explode = Hash::filter(explode('->', $action[1]));
                 $method = array_pop($explode);
                 $_object =& $obj;
 
