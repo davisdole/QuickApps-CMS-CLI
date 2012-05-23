@@ -11,7 +11,7 @@ class InstallComponent extends Component {
  *
  * @var InstallerComponent
  */
-    public $Installer;
+	public $Installer;
 
 /**
  * Called before the module installation process. A boolean FALSE return will
@@ -19,17 +19,17 @@ class InstallComponent extends Component {
  *
  * @return boolean FALSE to stop the installation.
  */
-    public function beforeInstall() {
-        return true;
-    }
+	public function beforeInstall() {
+		return true;
+	}
 
 /**
  * Called after the module has been installed.
  *
  * @return void
  */
-    function afterInstall() {
-    }
+	function afterInstall() {
+	}
 
 /**
  * Called before the module uninstall process. A boolean FALSE return will
@@ -37,15 +37,15 @@ class InstallComponent extends Component {
  *
  * @return boolean FALSE to stop the installation.
  */
-    public function beforeUninstall() {
-        return true;
-    }
+	public function beforeUninstall() {
+		return true;
+	}
 
 /**
  * Called after the module has been uninstalled.
  *
  * @return void
  */
-    public function afterUninstall() {
-    }
+	public function afterUninstall() {
+	}
 }

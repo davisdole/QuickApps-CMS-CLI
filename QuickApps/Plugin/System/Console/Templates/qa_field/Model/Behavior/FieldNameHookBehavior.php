@@ -18,9 +18,9 @@ class FieldNameHookBehavior extends ModelBehavior {
  *  `settings`: Array, fieldable behavior settings of the given entity
  * @return void
  */
-    public function field_name_before_find($info) {
-        return;
-    }
+	public function field_name_before_find($info) {
+		return;
+	}
 
 /**
  * Attach field data to entity record.
@@ -34,28 +34,28 @@ class FieldNameHookBehavior extends ModelBehavior {
  *  `settings`: Array, fieldable behavior settings of the given entity
  * @return void
  */
-    public function field_name_after_find(&$info) {
-        /**
-         * This example uses the `field_data` table as storage system.
-         * Field are allows to save their data in any table or storage system,
-         */
+	public function field_name_after_find(&$info) {
+		/**
+		 * This example uses the `field_data` table as storage system.
+		 * Field are allows to save their data in any table or storage system,
+		 */
 
-        // Capture field data for this entity row.
-        $data = ClassRegistry::init('Field.FieldData')->find('first',
-            array(
-                'conditions' => array(
-                    'FieldData.field_id' => $info['field']['id'],
-                    'FieldData.belongsTo' => $info['entity']->alias,
-                    'FieldData.foreignKey' => $info['result'][$data['entity']->alias][$data['entity']->primaryKey]
-                )
-            )
-        );
+		// Capture field data for this entity row.
+		$data = ClassRegistry::init('Field.FieldData')->find('first',
+			array(
+				'conditions' => array(
+					'FieldData.field_id' => $info['field']['id'],
+					'FieldData.belongsTo' => $info['entity']->alias,
+					'FieldData.foreignKey' => $info['result'][$data['entity']->alias][$data['entity']->primaryKey]
+				)
+			)
+		);
 
-        // fetch data to entity row
-        $info['field']['FieldData'] = $data['FieldData'];
+		// fetch data to entity row
+		$info['field']['FieldData'] = $data['FieldData'];
 
-        return;
-    }
+		return;
+	}
 
 /**
  * Validate POST field data.
@@ -65,30 +65,30 @@ class FieldNameHookBehavior extends ModelBehavior {
  * @param Array $info Associative array:
  *  `entity`: Object Model, entity reference
  *  `id`: Mixed, storage record ID. From `edit.ctp`: `FieldData.FieldText.{field_id}.id`
- *        A `null` value means create a new storage record.
- *        An integer value will update the existing record.
+ *		A `null` value means create a new storage record.
+ *		An integer value will update the existing record.
  *  `data`: Mixed, storage data. From `edit.ctp`: `FieldData.FieldText.{field_id}.data`
  *  `field_id`: Integer, field instance ID. From `edit.ctp`: `FieldData.FieldText.{field_id}.<id|data>`
  *  `settings`: Array, fieldable behavior settings of the given entity
  *  `data`: Mixed, POST data from field's inputs (in edit.ctp)
  * @return boolean
  */
-    public function field_name_before_validate(&$info) {
-        // get field instance information
-        $FieldInstance = ClassRegistry::init('Field.Field')->findById($info['field_id']);
+	public function field_name_before_validate(&$info) {
+		// get field instance information
+		$FieldInstance = ClassRegistry::init('Field.Field')->findById($info['field_id']);
 
-        // validate field's data only if field is required
-        if ($FieldInstance['Field']['required'] == 1) {
-            if (empty($info['data'])) {
-                // error message
-                ClassRegistry::init('Field.FieldData')->invalidate("FieldName.{$info['field_id']}.data", 'This field cannot be empty.');
+		// validate field's data only if field is required
+		if ($FieldInstance['Field']['required'] == 1) {
+			if (empty($info['data'])) {
+				// error message
+				ClassRegistry::init('Field.FieldData')->invalidate("FieldName.{$info['field_id']}.data", 'This field cannot be empty.');
 
-                return false;
-            }
-        }
+				return false;
+			}
+		}
 
-        return true;
-    }
+		return true;
+	}
 
 /**
  * After entity validation process and before data is saved.
@@ -97,17 +97,17 @@ class FieldNameHookBehavior extends ModelBehavior {
  * @param Array $info Associative array:
  *  `entity`: Object Model, entity reference
  *  `id`: Mixed, storage record ID. From `edit.ctp`: `FieldData.FieldText.{field_id}.id`
- *        A `null` value means create a new storage record.
- *        An integer value will update the existing record.
+ *		A `null` value means create a new storage record.
+ *		An integer value will update the existing record.
  *  `data`: Mixed, storage data. From `edit.ctp`: `FieldData.FieldText.{field_id}.data`
  *  `field_id`: Integer, field instance ID. From `edit.ctp`: `FieldData.FieldText.{field_id}.<id|data>`
  *  `settings`: Array, fieldable behavior settings of the given entity
  *  `data`: Mixed, POST data from field's inputs (in edit.ctp)
  * @return boolean
  */
-    public function field_name_before_save(&$info) {
-        return true;
-    }
+	public function field_name_before_save(&$info) {
+		return true;
+	}
 
 /**
  * After validation process and after entity has been saved.
@@ -116,34 +116,34 @@ class FieldNameHookBehavior extends ModelBehavior {
  * @param Array $info Associative array:
  *  `entity`: Object Model, entity reference
  *  `id`: Mixed, storage record ID. From `edit.ctp`: `FieldData.FieldText.{field_id}.id`
- *        A `null` value means create a new storage record.
- *        An integer value will update the existing record.
+ *		A `null` value means create a new storage record.
+ *		An integer value will update the existing record.
  *  `data`: Mixed, storage data. From `edit.ctp`: `FieldData.FieldText.{field_id}.data`
  *  `field_id`: Integer, field instance ID. From `edit.ctp`: `FieldData.FieldText.{field_id}.<id|data>`
  *  `created`: Boolean, TRUE if entity's save created a new record
  *  `settings`: Array, fieldable behavior settings of the given entity
  * @return void
  */
-    public function field_name_after_save(&$info) {
-        /**
-         * This example uses the `field_data` table as storage system.
-         * Field are allows to save their data in any table or storage system,
-         */
+	public function field_name_after_save(&$info) {
+		/**
+		 * This example uses the `field_data` table as storage system.
+		 * Field are allows to save their data in any table or storage system,
+		 */
 
-        // save field data in `field_data` table
-        ClassRegistry::init('Field.FieldData')->save(array(
-            'id' => $info['id'],
-            'field_id' => $info['field_id'],
-            'data' => $info['data'],
-            'belongsTo' => $info['entity']->alias,
-            'foreignKey' => $info['entity']->id
-        ));
+		// save field data in `field_data` table
+		ClassRegistry::init('Field.FieldData')->save(array(
+			'id' => $info['id'],
+			'field_id' => $info['field_id'],
+			'data' => $info['data'],
+			'belongsTo' => $info['entity']->alias,
+			'foreignKey' => $info['entity']->id
+		));
 
-        // index field data
-        $info['entity']->indexField($info['data']);
+		// index field data
+		$info['entity']->indexField($info['data']);
 
-        return;
-    }
+		return;
+	}
 
 /**
  * Before entity records is deleted.
@@ -152,16 +152,16 @@ class FieldNameHookBehavior extends ModelBehavior {
  * @param Array $info Associative array:
  *  `entity`: Object Model, entity reference
  *  `id`: Mixed, storage record ID. From `edit.ctp`: `FieldData.FieldText.{field_id}.id`
- *        A `null` value means create a new storage record.
- *        An integer value will update the existing record.
+ *		A `null` value means create a new storage record.
+ *		An integer value will update the existing record.
  *  `data`: Mixed, storage data. From `edit.ctp`: `FieldData.FieldText.{field_id}.data`
  *  `field_id`: Integer, field instance ID. From `edit.ctp`: `FieldData.FieldText.{field_id}.<id|data>`
  *  `settings`: Array, fieldable behavior settings of the given entity
  * @return boolean
  */
-    public function field_name_before_delete($info) {
-        return true;
-    }
+	public function field_name_before_delete($info) {
+		return true;
+	}
 
 /**
  * After entity records has been deleted.
@@ -170,18 +170,18 @@ class FieldNameHookBehavior extends ModelBehavior {
  *
  * @return void
  */
-    public function field_name_after_delete($info) {
-        // delete from `field_data` table all the data related to the this entity record
-        ClassRegistry::init('Field.FieldData')->deleteAll(
-            array(
-                'FieldData.belongsTo' => $info['entity']->alias,
-                'FieldData.field_id' => $info['field_id'],
-                'FieldData.foreignKey' => $info['entity']->id
-            )
-        );
+	public function field_name_after_delete($info) {
+		// delete from `field_data` table all the data related to the this entity record
+		ClassRegistry::init('Field.FieldData')->deleteAll(
+			array(
+				'FieldData.belongsTo' => $info['entity']->alias,
+				'FieldData.field_id' => $info['field_id'],
+				'FieldData.foreignKey' => $info['entity']->id
+			)
+		);
 
-        return;
-    }
+		return;
+	}
 
 /**
  * Before field is attached to entity.
@@ -191,9 +191,9 @@ class FieldNameHookBehavior extends ModelBehavior {
  * @param Model $Field Instance object
  * @return boolean
  */
-    public function field_name_before_save_instance(Model $Field) {
-        return true;
-    }
+	public function field_name_before_save_instance(Model $Field) {
+		return true;
+	}
 
 /**
  * After field instance is removed/detached from entity.
@@ -203,11 +203,11 @@ class FieldNameHookBehavior extends ModelBehavior {
  * @param Model $Field Instance object
  * @return boolean
  */
-    public function field_name_after_delete_instance(Model $Field) {
-        ClassRegistry::init('Field.FieldData')->deleteAll(
-            array(
-                'FieldData.field_id' => $Field->data['Field']['id']
-            )
-        );
-    }
+	public function field_name_after_delete_instance(Model $Field) {
+		ClassRegistry::init('Field.FieldData')->deleteAll(
+			array(
+				'FieldData.field_id' => $Field->data['Field']['id']
+			)
+		);
+	}
 }
